@@ -59,7 +59,7 @@ void put_row(char *row)
     printw("|%s|", row);
 }
 
-void put_field(char **field, int height, int width)
+void put_field(char **field, int height, int width, int points)
 {
     int i;
 
@@ -77,7 +77,8 @@ void put_field(char **field, int height, int width)
         printw("-");
         i++;
     }
-    printw("+");
+    printw("+\n");
+    printw("Points: %d", points);
     refresh();
 }
 
@@ -103,19 +104,20 @@ void clear_row(char *row)
     }
 }
 
-void check_rows(char **field, int height)
+void check_rows(char **field, int height, int width, int *points)
 {
     int i;
     int j;
     int clear;
 
+    i = 0;
     while (i < height)
     {
         j = 0;
         clear = 1;
-        while (field[j][i])
+        while (j < width && field[i][j] != '\0')
         {
-            if (field[j][i] == ' ')
+            if (field[i][j] == ' ')
             {
                 clear = 0;
                 break;
@@ -123,56 +125,44 @@ void check_rows(char **field, int height)
             j++;
         }
         if (clear)
+        {
             clear_row(field[i]);
+            *points += 100;
+        }
         i++;
     }
 }
 
-void move_piece(char **field, ActivePiece *piece, int height, int width)
+void move_piece(char **field, ActivePiece *piece, int height, int width, int *points)
 {
-    int i;
     int key;
+	int i;
 
-    piece->height = 0;
-    while (piece->height < height)
+	i = 1;
+    while (piece->height < height - 1)
     {
-        i = 0;
-        while (i < 10)
-        {
-            field[piece->height][piece->width] = piece->type;
-            put_field(field, height, width);
-            field[piece->height][piece->width] = ' ';
-            timeout(100);
-            key = getch();
-            if (key == KEY_LEFT)
-                piece->width--;
-                if (piece->width < 0)
-                    piece->width++;
-            else if (key == KEY_RIGHT)
-                piece->width++;
-                if (piece->width > height - 1)
-                    piece->width--;
-            i++;
-            clear();
-        }
         field[piece->height][piece->width] = piece->type;
-        put_field(field, height, width);
-        if (piece->height == height - 1)
-        {
-            check_rows(field, height);
-            clear();
-            break;
-        }
-        if (field[piece->height + 1][piece->width] != ' ')
-        {
-            check_rows(field, height);
-            clear();
-            break;
-        }
+        put_field(field, height, width, *points);
         field[piece->height][piece->width] = ' ';
-        piece->height++;
-        clear();
+        timeout(100);
+        key = getch();
+        if (key == KEY_LEFT && piece->width > 0 && field[piece->height][piece->width - 1] == ' ')
+            piece->width--;
+        else if (key == KEY_RIGHT && piece->width < width - 1 && field[piece->height][piece->width + 1] == ' ')
+            piece->width++;
+        else if (key == KEY_DOWN && piece->height < height - 1 && field[piece->height + 1][piece->width] == ' ')
+            piece->height++;
+        if (piece->height < height - 1 && field[piece->height + 1][piece->width] != ' ')
+            break;
+		if (i % 10 == 0)
+			piece->height++;
+		clear();
+		i++;
     }
+    field[piece->height][piece->width] = piece->type;
+    put_field(field, height, width, *points);
+    check_rows(field, height, width, points);
+    clear();
 }
 
 void check_game_status(char **field, int *gameover, int width)
@@ -194,12 +184,14 @@ void check_game_status(char **field, int *gameover, int width)
 int main(void)
 {
     int key;
-    int width = 20;
+    int width = 10;
     int height = 20;
     char **field;
     int gameover;
     ActivePiece piece = {0, 0, '#'};
+    int points;
 
+    points = 0;
     initscr();
     keypad(stdscr, TRUE);
     field = create_game_field(height, width);
@@ -209,16 +201,14 @@ int main(void)
         return (1);
     }
     fill_field_for_start(field, height, width);
-    put_field(field, height, width);
+    put_field(field, height, width, points);
     gameover = 0;
     while (!gameover)
     {
-        move_piece(field, &piece, height, width);
+        piece.width = width / 2;
+        piece.height = 0;
+        move_piece(field, &piece, height, width, &points);
         check_game_status(field, &gameover, width);
-        if (piece.width == width - 1)
-            piece.width = 0;
-        else
-            piece.width++;
     }
     free_field(field, height);
     key = getch();
