@@ -1,106 +1,57 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include "pieces.h"
+#include "field.h"
+#include <time.h>
 
 typedef struct {
     int width;
     int height;
-    char type;
+    const char ***type;
+    int piece_size;
+    int piece_index;
 } ActivePiece;
 
-char **create_game_field(int height, int width)
+int piece_is_valid(char **field, ActivePiece piece, char action)
 {
-    char **field;
     int i;
-    
-    field = (char **)malloc(sizeof(char *) * height); 
-    if (!field)
-        return (NULL);
-    
-    i = 0;
-    while (i < height)
+    int j;
+
+    if (action == 'l')
+        piece.width--;
+    else if (action == 'r')
+        piece.width++;
+    else if (action == 'd')
+        piece.height++;
+    else if (action == 'c')
     {
-        field[i] = (char *)malloc(sizeof(char) * (width + 1)); 
-        if (!field[i])
+        piece.piece_index = (piece.piece_index + 1) % 4;
+        piece.type = &piece.type[piece.piece_index];
+    }
+    i = 0;
+    while (i < piece.piece_size)
+    {
+        j = 0;
+        while (piece.type[i][j])
         {
-            while (i > 0)
-            {
-                i--;
-                free(field[i]);
-            }
-            free(field);
-            return (NULL);
+            if (piece.type[piece.piece_index][i][j] == '#' && field[piece.height + i][piece.width + j] != ' ')
+                return (0);
+            j++;
         }
         i++;
     }
-    return (field);
+    return (1);
 }
 
-void fill_field_for_start(char **field, int height, int width)
+void clear_row(char *row, int width)
 {
-    int i_height;
-	int	j_width;
-    
-    i_height = 0;
-    while (i_height < height)
+	int i;
+
+	i = 2;
+    while (i < width - 2)
     {
-        j_width = 0;
-        while (j_width < width)
-        {
-            field[i_height][j_width] = ' ';
-            j_width++;
-        }
-        field[i_height][j_width] = '\0';
-        i_height++;
-    }
-}
-
-void put_row(char *row)
-{
-    printw("|%s|", row);
-}
-
-void put_field(char **field, int height, int width, int points)
-{
-    int i;
-
-    i = 0;
-    while (i < height)
-    {
-        put_row(field[i]);
-        printw("\n");
+        row[i] = ' ';
         i++;
-    }
-    i = 0;
-    printw("+");
-    while (i < width)
-    {
-        printw("-");
-        i++;
-    }
-    printw("+\n");
-    printw("Points: %d", points);
-    refresh();
-}
-
-void free_field(char **field, int height)
-{
-    int i;
-    
-    i = 0;
-    while (i < height)
-    {
-        free(field[i]);
-        i++;
-    }
-    free(field);
-}
-
-void clear_row(char *row)
-{
-    while (*row)
-    {
-        *row = ' ';
-        row++;
     }
 }
 
@@ -110,12 +61,12 @@ void check_rows(char **field, int height, int width, int *points)
     int j;
     int clear;
 
-    i = 0;
-    while (i < height)
+    i = 2;
+    while (i < height - 2)
     {
-        j = 0;
+        j = 2;
         clear = 1;
-        while (j < width && field[i][j] != '\0')
+        while (j < width - 2 && field[i][j] != '\0')
         {
             if (field[i][j] == ' ')
             {
@@ -126,8 +77,50 @@ void check_rows(char **field, int height, int width, int *points)
         }
         if (clear)
         {
-            clear_row(field[i]);
+            clear_row(field[i], width);
             *points += 100;
+        }
+        i++;
+    }
+}
+
+void place_piece(char **field, ActivePiece piece, int width , int height)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (i < piece.piece_size)
+    {
+        j = 0;
+        while (j < piece.piece_size)
+        {
+            if (piece.width + j < width - piece.piece_size && piece.width + j >= 0 \
+            && piece.height + i < height)
+            {
+                if (piece.type[piece.piece_index][i][j] == '#')
+                    field[piece.height + i][piece.width + j] = '#';
+            }
+            j++;
+        }
+        i++;
+    }
+}
+
+void remove_piece(char **field, ActivePiece piece)
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (i < piece.piece_size)
+    {
+        j = 0;
+        while (piece.type[piece.piece_index][i][j])
+        {
+            if (piece.type[piece.piece_index][i][j] == '#')
+                field[piece.height + i][piece.width + j] = ' ';
+            j++;
         }
         i++;
     }
@@ -139,27 +132,47 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
 	int i;
 
 	i = 1;
-    while (piece->height < height - 1)
+    while (piece->height < height - 3)
     {
-        field[piece->height][piece->width] = piece->type;
+        place_piece(field, *piece, width, height);
         put_field(field, height, width, *points);
-        field[piece->height][piece->width] = ' ';
+        remove_piece(field, *piece);
         timeout(100);
         key = getch();
-        if (key == KEY_LEFT && piece->width > 0 && field[piece->height][piece->width - 1] == ' ')
-            piece->width--;
-        else if (key == KEY_RIGHT && piece->width < width - 1 && field[piece->height][piece->width + 1] == ' ')
-            piece->width++;
-        else if (key == KEY_DOWN && piece->height < height - 1 && field[piece->height + 1][piece->width] == ' ')
-            piece->height++;
-        if (piece->height < height - 1 && field[piece->height + 1][piece->width] != ' ')
-            break;
+        if (key == KEY_LEFT)
+        {
+            if (piece_is_valid(field, *piece, 'l'))
+                piece->width--;
+        }
+        else if (key == KEY_RIGHT)
+        {
+            if (piece_is_valid(field, *piece, 'r'))
+                piece->width++;
+        }
+        else if (key == KEY_DOWN)
+        {
+            if (piece_is_valid(field, *piece, 'd'))
+                piece->height++;
+        }
+        else if (key == KEY_UP)
+        {
+            if (piece_is_valid(field, *piece, 'c'))
+            {
+                piece->piece_index = (piece->piece_index + 1) % 4;
+                piece->type = &piece->type[piece->piece_index];
+            }
+                
+        }
 		if (i % 10 == 0)
+        {
+            if (!piece_is_valid(field, *piece, 'd'))
+                break;
 			piece->height++;
-		clear();
+        }
+        clear();
 		i++;
     }
-    field[piece->height][piece->width] = piece->type;
+    place_piece(field, *piece, width, height);
     put_field(field, height, width, *points);
     check_rows(field, height, width, points);
     clear();
@@ -172,7 +185,7 @@ void check_game_status(char **field, int *gameover, int width)
     i = 0;
     while (i < width)
     {
-        if (field[0][i] != ' ')
+        if (field[1][i] != ' ' && field[0][i] != ' ')
         {
             *gameover = 1;
             break;
@@ -181,37 +194,50 @@ void check_game_status(char **field, int *gameover, int width)
     }
 }
 
+void push_down(char **field, int height)
+{
+    int stop;
+
+    stop = 0;
+    while (height > 0)
+    {
+
+    }
+}
+
 int main(void)
 {
     int key;
-    int width = 10;
-    int height = 20;
+    int width = 10 + 4;
+    int height = 20 + 4;
     char **field;
-    int gameover;
-    ActivePiece piece = {0, 0, '#'};
-    int points;
+	int gameover;
+    ActivePiece piece = {9, 0, (const char ***)pieces[0], 4, 0};
+    int points = 0;
+	int random;
 
-    points = 0;
-    initscr();
-    keypad(stdscr, TRUE);
+	srand(time(NULL));
     field = create_game_field(height, width);
     if (!field)
     {
-        printw("Memory allocation failed\n");
+        printf("Memory allocation failed\n");
         return (1);
     }
     fill_field_for_start(field, height, width);
-    put_field(field, height, width, points);
-    gameover = 0;
-    while (!gameover)
-    {
-        piece.width = width / 2;
-        piece.height = 0;
+    initscr();
+    keypad(stdscr, TRUE);
+	gameover = 0;
+	while (!gameover)
+	{
+		piece.type = (const char ***)pieces[rand() % 7];
+		piece.height = 0;
+		piece.width = 9;
         move_piece(field, &piece, height, width, &points);
         check_game_status(field, &gameover, width);
-    }
-    free_field(field, height);
+	}
+    put_field(field, height, width, points);
     key = getch();
+    free_field(field, height);
     endwin();
     return (0);
 }
