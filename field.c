@@ -41,7 +41,7 @@ void fill_field_for_start(char **field, int height, int width)
         j_width = 0;
         while (j_width < width)
         {
-            if (i_height == 0 || i_height == 1)
+            if (i_height >= 0 && i_height <= 3 )
                 field[i_height][j_width] = ' ';
             else if (j_width == 0 || j_width == 1 || j_width == width - 1 || j_width == width - 2)
                 field[i_height][j_width] = '|';

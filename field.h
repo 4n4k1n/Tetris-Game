@@ -7,4 +7,5 @@ void put_row(char *row);
 void put_field(char **field, int height, int points);
 void free_field(char **field, int height);
 
+
 #endif
