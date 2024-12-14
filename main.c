@@ -7,7 +7,7 @@
 typedef struct {
     int width;
     int height;
-    const char ***type;
+    char *type;
     int piece_size;
     int piece_index;
 } ActivePiece;
@@ -26,15 +26,14 @@ int piece_is_valid(char **field, ActivePiece piece, char action)
     else if (action == 'c')
     {
         piece.piece_index = (piece.piece_index + 1) % 4;
-        piece.type = &piece.type[piece.piece_index];
     }
     i = 0;
     while (i < piece.piece_size)
     {
         j = 0;
-        while (piece.type[i][j])
+        while (j < piece.piece_size)
         {
-            if (piece.type[piece.piece_index][i][j] == '#' && field[piece.height + i][piece.width + j] != ' ')
+            if (piece.type[((i * piece.piece_size) + j) + (piece.piece_index * 16)] == '#' && field[piece.height + i][piece.width + j] != ' ')
                 return (0);
             j++;
         }
@@ -84,22 +83,27 @@ void check_rows(char **field, int height, int width, int *points)
     }
 }
 
-void place_piece(char **field, ActivePiece piece, int width , int height)
+void place_piece(char **field, ActivePiece piece, int width, int height)
 {
-	int i;
-	int j;
-
-	i = 0;
-	while (i < piece.piece_size)
-    {
+    int i;
+    int j;
+    int row;
+    int col;
+    
+    if (field == NULL || piece.type == NULL) {
+        return;
+    }
+    i = 0;
+    while (i < piece.piece_size) {
         j = 0;
-        while (j < piece.piece_size)
-        {
-            if (piece.width + j < width - piece.piece_size && piece.width + j >= 0 \
-            && piece.height + i < height)
+        while (j < piece.piece_size) {
+            col = piece.width + j;
+            row = piece.height + i;
+            if (col >= 0 && col < width && 
+                row >= 0 && row < height)
             {
-                if (piece.type[piece.piece_index][i][j] == '#')
-                    field[piece.height + i][piece.width + j] = '#';
+                if (piece.type[j + (piece.piece_index * 16)] == '#')
+                    field[row][col] = '#';
             }
             j++;
         }
@@ -116,9 +120,9 @@ void remove_piece(char **field, ActivePiece piece)
 	while (i < piece.piece_size)
     {
         j = 0;
-        while (piece.type[piece.piece_index][i][j])
+        while (j < piece.piece_size)
         {
-            if (piece.type[piece.piece_index][i][j] == '#')
+            if (piece.type[((i * piece.piece_size) + j) + (piece.piece_index * 16)] == '#')
                 field[piece.height + i][piece.width + j] = ' ';
             j++;
         }
@@ -157,11 +161,7 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
         else if (key == KEY_UP)
         {
             if (piece_is_valid(field, *piece, 'c'))
-            {
                 piece->piece_index = (piece->piece_index + 1) % 4;
-                piece->type = &piece->type[piece->piece_index];
-            }
-                
         }
 		if (i % 10 == 0)
         {
@@ -212,9 +212,8 @@ int main(void)
     int height = 20 + 4;
     char **field;
 	int gameover;
-    ActivePiece piece = {9, 0, (const char ***)pieces[0], 4, 0};
+    ActivePiece piece = {9, 0, pieces[0], 4, 0};
     int points = 0;
-	int random;
 
 	srand(time(NULL));
     field = create_game_field(height, width);
@@ -229,9 +228,9 @@ int main(void)
 	gameover = 0;
 	while (!gameover)
 	{
-		piece.type = (const char ***)pieces[rand() % 7];
-		piece.height = 0;
-		piece.width = 9;
+		piece.type = pieces[rand() % 7];
+		piece.height = 2;
+		piece.width = 4;
         move_piece(field, &piece, height, width, &points);
         check_game_status(field, &gameover, width);
 	}
