@@ -61,7 +61,7 @@ void put_row(char *row)
     printw("%s", row);
 }
 
-void put_field(char **field, int height, int width, int points)
+void put_field(char **field, int height, int points)
 {
     int i;
 
