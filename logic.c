@@ -66,12 +66,17 @@ void check_rows(char **field, int height, int width, int *points)
     
 }
 
-void move_piece(char **field, ActivePiece *piece, int height, int width, int *points)
+void move_piece(char **field, ActivePiece *piece, int height, int width, int *points, int *gameover)
 {
     int key;
 	int i;
-    static int speed = 100;
+    static int speed = 50;
 
+    if (!piece_is_valid(field, *piece, 'x'))
+    {
+        *gameover = 1;
+        return ;
+    }
 	i = 1;
     while (piece->height < height - 3)
     {
@@ -93,14 +98,30 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
         else if (key == 's')
         {
             if (piece_is_valid(field, *piece, 'd'))
+            {
                 piece->height++;
+                i = 1;
+            }
         }
         else if (key == 'w')
         {
             if (piece_is_valid(field, *piece, 'c'))
                 piece->piece_index = (piece->piece_index + 1) % 4;
         }
-		if (i % 10 == 0)
+        else if (key == ' ')
+        {
+            while (piece_is_valid(field, *piece, 'd'))
+            {
+                piece->height++;
+            }
+            break;
+        }
+        else if (key == 27)
+        {
+            *gameover = 1;
+            return ;
+        }
+		if (i % 20 == 0)
         {
             if (!piece_is_valid(field, *piece, 'd'))
                 break;
@@ -130,5 +151,26 @@ void check_game_status(char **field, int *gameover, int width)
             break;
         }
         i++;
+    }
+}
+
+void gameover_sign(int points)
+{
+    char end;
+
+    clear();
+    printw("  __ _  __ _ _ __ ___   ___  _____   _____ _ __ \n");
+    printw(" / _` |/ _` | '_ ` _ \\ / _ \\/ _ \\ \\ / / _ \\ '__|\n");
+    printw("| (_| | (_| | | | | | |  __/ (_) \\ V /  __/ |  \n");
+    printw(" \\__, |\\__,_|_| |_| |_|\\___|\\___/ \\_/ \\___|_| \n");
+    printw("  __/ |    \n");
+    printw(" |___/   \n\n");
+    printw("POINTS: %d\n\n", points);
+    printw("Press 'ESC' to quit.\n");
+    refresh();
+    while (end != 27)
+    {
+        timeout(50000);
+        end = getch();
     }
 }
