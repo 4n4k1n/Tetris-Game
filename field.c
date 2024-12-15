@@ -1,4 +1,5 @@
 #include "field.h"
+#include "action.h"
 #include <ncurses.h>
 #include <stdlib.h>
 
@@ -61,6 +62,19 @@ void put_row(char *row)
     printw("%s", row);
 }
 
+void put_next_piece(char *row, int index)
+{
+    int i;
+
+    i = 0;
+    while (i < 4)
+    {
+        printw("%c", row[i + (4 * index)]);
+    }
+    printw("|");
+}
+
+
 void put_field(char **field, int height, int points)
 {
     int i;
@@ -68,8 +82,16 @@ void put_field(char **field, int height, int points)
     i = 0;
     while (i < height)
     {
+        printw("               ");
         put_row(field[i]);
         printw("\n");
+        // if (i > 3 && i < 10)
+        // {
+        //     if (i == 4 || i == 9)
+        //         printw("-------");
+        //     else
+        //         put_next_piece(piece.next_piece, i - 5);
+        // }
         i++;
     }
     printw("Points: %d", points);
