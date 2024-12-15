@@ -7,12 +7,11 @@
 
 int main(void)
 {
-    int key;
     int width = 10 + 4;
     int height = 20 + 6;
     char **field;
 	int gameover;
-    ActivePiece piece = {9, 0, pieces[0], 4, 0, 0};
+    ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0}; 
     int points = 0;
 
 	srand(time(NULL));
@@ -25,21 +24,22 @@ int main(void)
     fill_field_for_start(field, height, width);
     initscr();
     keypad(stdscr, TRUE);
+    noecho();
 	gameover = 0;
+    piece.next_piece = pieces[rand() % 7];
 	while (!gameover)
 	{
-		piece.type = pieces[rand() % 7];
+		piece.type = piece.next_piece;
+        piece.next_piece = pieces[rand() % 7];
 		piece.height = 2;
 		piece.width = 4;
         piece.rounds++;
-        move_piece(field, &piece, height, width, &points);
+        move_piece(field, &piece, height, width, &points, &gameover);
         check_game_status(field, &gameover, width);
 	}
     put_field(field, height, points);
-    key = getch();
     free_field(field, height);
+    gameover_sign(points);
     endwin();
-    if (key == 'q')
-        return (1);
     return (0);
 }
