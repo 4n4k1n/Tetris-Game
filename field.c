@@ -75,23 +75,40 @@ void put_next_piece(char *row, int index)
 }
 
 
-void put_field(char **field, int height, int points)
+void put_field(char **field, int height, int points, char *next_piece, char *hold_piece)
 {
     int i;
 
     i = 0;
     while (i < height)
     {
-        printw("               ");
+        if (i >= 4 && i <= 10)
+        {
+            if (i == 4)
+                printw("         HOLD ");
+            else if (i == 5 || i == 10)
+                printw("       -------");
+            else
+            {
+                if (hold_piece == NULL)
+                    printw("       |      ");
+                else
+                    printw("       | %c%c%c%c ", hold_piece[((i - 6) * 4)], hold_piece[((i - 6) * 4) + 1], hold_piece[((i - 6) * 4) + 2], hold_piece[((i - 6) * 4) + 3]);
+            }
+        }
+        else
+            printw("              ");
         put_row(field[i]);
+        if (i >= 4 && i <= 10)
+        {
+            if (i == 4)
+                printw(" NEXT");
+            else if (i == 5 || i == 10)
+                printw("-------");
+            else
+                printw(" %c%c%c%c |", next_piece[((i - 6) * 4)], next_piece[((i - 6) * 4) + 1], next_piece[((i - 6) * 4) + 2], next_piece[((i - 6) * 4) + 3]);
+        }
         printw("\n");
-        // if (i > 3 && i < 10)
-        // {
-        //     if (i == 4 || i == 9)
-        //         printw("-------");
-        //     else
-        //         put_next_piece(piece.next_piece, i - 5);
-        // }
         i++;
     }
     printw("Points: %d", points);
