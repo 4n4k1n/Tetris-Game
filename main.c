@@ -37,7 +37,7 @@ int main(void)
         move_piece(field, &piece, height, width, &points, &gameover);
         check_game_status(field, &gameover, width);
 	}
-    put_field(field, height, points);
+    put_field(field, height, points, piece.next_piece, piece.hold_piece);
     free_field(field, height);
     gameover_sign(points);
     endwin();
