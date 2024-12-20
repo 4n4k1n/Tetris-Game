@@ -14,9 +14,9 @@ int piece_is_valid(char **field, ActivePiece piece, char action)
     else if (action == 'd')
         piece.height++;
     else if (action == 'c')
-    {
         piece.piece_index = (piece.piece_index + 1) % 4;
-    }
+    else if (action == 's')
+        piece.type = piece.hold_piece;
     i = 0;
     while (i < piece.piece_size)
     {
@@ -71,6 +71,7 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
     int key;
 	int i;
     static int speed = 50;
+    char *switch_piece;
 
     if (!piece_is_valid(field, *piece, 'x'))
     {
@@ -78,10 +79,11 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
         return ;
     }
 	i = 1;
+    switch_piece = NULL;
     while (piece->height < height - 3)
     {
         place_piece(field, *piece, width, height);
-        put_field(field, height, *points);
+        put_field(field, height, *points, (*piece).next_piece, (*piece).hold_piece);
         remove_piece(field, *piece);
         timeout(speed);
         key = getch();
@@ -121,6 +123,20 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
             *gameover = 1;
             return ;
         }
+        else if (key == 'm' && switch_piece == NULL)
+        {
+            if (piece->hold_piece == NULL)
+                {
+                    piece->hold_piece = piece->type;
+                    return;
+                }
+            else if (piece_is_valid(field, *piece, 's'))
+            {
+                switch_piece = piece->type;
+                piece->type = piece->hold_piece;
+                piece->hold_piece = switch_piece;
+            }
+        }
 		if (i % 20 == 0)
         {
             if (!piece_is_valid(field, *piece, 'd'))
@@ -131,7 +147,7 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
 		i++;
     }
     place_piece(field, *piece, width, height);
-    put_field(field, height, *points);
+    put_field(field, height, *points, (*piece).next_piece, (*piece).hold_piece);
     check_rows(field, height, width, points);
     if (piece->rounds % 10 == 0 && speed > 20)
         speed -= 2;
@@ -163,7 +179,7 @@ void gameover_sign(int points)
     printw(" / _` |/ _` | '_ ` _ \\ / _ \\/ _ \\ \\ / / _ \\ '__|\n");
     printw("| (_| | (_| | | | | | |  __/ (_) \\ V /  __/ |  \n");
     printw(" \\__, |\\__,_|_| |_| |_|\\___|\\___/ \\_/ \\___|_| \n");
-    printw("  __/ |    \n");
+    printw("  __/ |                               @SKYW4LK3R\n");
     printw(" |___/   \n\n");
     printw("POINTS: %d\n\n", points);
     printw("Press 'ESC' to quit.\n");
