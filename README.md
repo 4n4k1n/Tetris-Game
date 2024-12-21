@@ -49,7 +49,7 @@ Once compiled, you can run the game using:
 
 ## Screenshots
 
-![Gameplay Screenshot](gameplay.png)
+![Gameplay Screenshot](Gameplay.png)
 
 
 fair evaluation :)
