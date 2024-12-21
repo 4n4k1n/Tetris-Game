@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include "action.h"
 #include "field.h"
+#include "setstruct.h"
 
 int piece_is_valid(char **field, ActivePiece piece, char action)
 {
@@ -66,7 +67,7 @@ void check_rows(char **field, int height, int width, int *points)
     
 }
 
-void move_piece(char **field, ActivePiece *piece, int height, int width, int *points, int *gameover)
+void move_piece(char **field, ActivePiece *piece, int height, int width, int *points, int *gameover, Settings settings)
 {
     int key;
 	int i;
@@ -87,17 +88,17 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
         remove_piece(field, *piece);
         timeout(speed);
         key = getch();
-        if (key == 'a')
+        if (key == settings.left)
         {
             if (piece_is_valid(field, *piece, 'l'))
                 piece->width--;
         }
-        else if (key == 'd')
+        else if (key == settings.right)
         {
             if (piece_is_valid(field, *piece, 'r'))
                 piece->width++;
         }
-        else if (key == 's')
+        else if (key == settings.soft)
         {
             if (piece_is_valid(field, *piece, 'd'))
             {
@@ -105,12 +106,12 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
                 i = 1;
             }
         }
-        else if (key == 'w')
+        else if (key == settings.rotate)
         {
             if (piece_is_valid(field, *piece, 'c'))
                 piece->piece_index = (piece->piece_index + 1) % 4;
         }
-        else if (key == ' ')
+        else if (key == settings.hard)
         {
             while (piece_is_valid(field, *piece, 'd'))
             {
@@ -123,7 +124,7 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
             *gameover = 1;
             return ;
         }
-        else if (key == 'm' && switch_piece == NULL)
+        else if (key == settings.hold && switch_piece == NULL)
         {
             if (piece->hold_piece == NULL)
                 {
