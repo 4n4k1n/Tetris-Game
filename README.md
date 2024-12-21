@@ -45,7 +45,9 @@ Once compiled, you can run the game using:
 - **A / D / W**: Move the tetromino left or right, or rotate it.
 - **Space**: Hard drop the tetromino.
 - **Down Arrow**: Soft drop.
+- **Z**: Hold the tetromino.
 - **ESC**: Quit the game.
+(You can change the constols)
 
 ## Screenshots
 
