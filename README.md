@@ -47,7 +47,7 @@ Once compiled, you can run the game using:
 - **Down Arrow**: Soft drop.
 - **Z**: Hold the tetromino.
 - **ESC**: Quit the game.
-(You can change the constols)
+- (You can change the constols)
 
 ## Screenshots
 
