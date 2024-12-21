@@ -4,6 +4,8 @@
 #include "pieces.h"
 #include "field.h"
 #include "logic.h"
+#include "setstruct.h"
+#include "settings.h"
 
 int main(void)
 {
@@ -11,7 +13,8 @@ int main(void)
     int height = 20 + 6;
     char **field;
 	int gameover;
-    ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0}; 
+    ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0};
+    Settings settings = {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, ' ', 'z'};
     int points = 0;
 
 	srand(time(NULL));
@@ -24,6 +27,7 @@ int main(void)
     fill_field_for_start(field, height, width);
     initscr();
     keypad(stdscr, TRUE);
+    get_settings(&settings);
     noecho();
 	gameover = 0;
     piece.next_piece = pieces[rand() % 7];
@@ -34,7 +38,7 @@ int main(void)
 		piece.height = 2;
 		piece.width = 4;
         piece.rounds++;
-        move_piece(field, &piece, height, width, &points, &gameover);
+        move_piece(field, &piece, height, width, &points, &gameover, settings);
         check_game_status(field, &gameover, width);
 	}
     put_field(field, height, points, piece.next_piece, piece.hold_piece);
