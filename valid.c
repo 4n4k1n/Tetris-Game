@@ -122,5 +122,5 @@ void egg(void)
         timeout(1000);
         key = getch();
     }
-    system("xdg-open https://www.youtube.com/watch?v=o-YBDTqX_ZU");
+    system("xdg-open https://shattereddisk.github.io/rickroll/rickroll.mp4");
 }
