@@ -171,7 +171,7 @@ void check_game_status(char **field, int *gameover, int width)
     }
 }
 
-void gameover_sign(int points)
+void gameover_sign(int points, int highscore)
 {
     char end;
 
@@ -182,7 +182,10 @@ void gameover_sign(int points)
     printw(" \\__, |\\__,_|_| |_| |_|\\___|\\___/ \\_/ \\___|_| \n");
     printw("  __/ |                               @SKYW4LK3R\n");
     printw(" |___/   \n\n");
-    printw("POINTS: %d\n\n", points);
+    if (points > highscore)
+        printw("NEW HIGHSCORE >>%d<<\n\n", points);
+    else
+        printw("HIGHSCORE >>%d<<\nSCORE >%d<\n\n", highscore, points);
     printw("Press 'ESC' to quit.\n");
     refresh();
     while (end != 27)

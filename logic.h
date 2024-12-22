@@ -18,6 +18,6 @@ int piece_is_valid(char **field, ActivePiece piece, char action);
 void check_rows(char **field, int height, int width, int *points);
 void move_piece(char **field, ActivePiece *piece, int height, int width, int *points, int *gameover, Settings settings);
 void check_game_status(char **field, int *gameover, int width);
-void gameover_sign(int points);
+void gameover_sign(int points, int highscore);
 
 #endif
