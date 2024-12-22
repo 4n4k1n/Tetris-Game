@@ -6,6 +6,7 @@
 #include "logic.h"
 #include "setstruct.h"
 #include "settings.h"
+#include "ranking.h"
 
 int main(void)
 {
@@ -16,6 +17,7 @@ int main(void)
     ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0};
     Settings settings = {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, ' ', 'z'};
     int points = 0;
+    int highscore;
 
 	srand(time(NULL));
     field = create_game_field(height, width);
@@ -43,7 +45,8 @@ int main(void)
 	}
     put_field(field, height, points, piece.next_piece, piece.hold_piece);
     free_field(field, height);
-    gameover_sign(points);
+    highscore = check_highscore("highscore.txt", points);
+    gameover_sign(points, highscore);
     endwin();
     return (0);
 }
