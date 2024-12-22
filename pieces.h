@@ -3,5 +3,4 @@
 
 extern char pieces[7][65];
 
-
 #endif
