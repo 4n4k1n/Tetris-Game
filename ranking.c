@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-
-
 int check_highscore(char *filename, int score)
 {
     FILE *fp;
