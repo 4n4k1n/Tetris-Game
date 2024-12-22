@@ -1,16 +1,7 @@
 #ifndef ACTION_H
 #define ACTION_H
 
-typedef struct {
-    int width;
-    int height;
-    char *type;
-    char *next_piece;
-    char *hold_piece;
-    int piece_size;
-    int piece_index;
-    int rounds;
-} ActivePiece;
+#include "activepiece.h"
 
 void clear_row(char *row, int width);
 void push_down(char **field, int row, int width);
