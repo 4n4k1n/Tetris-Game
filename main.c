@@ -7,6 +7,9 @@
 #include "setstruct.h"
 #include "settings.h"
 #include "ranking.h"
+#include "activepiece.h"
+#include "valid.h"
+#include "gameover_print.h"
 
 int main(void)
 {
