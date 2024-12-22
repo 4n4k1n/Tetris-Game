@@ -71,6 +71,8 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
                 }
             else if (piece_is_valid(field, *piece, 's'))
             {
+                piece->height = 2;
+                piece->width = 4;
                 switch_piece = piece->type;
                 piece->type = piece->hold_piece;
                 piece->hold_piece = switch_piece;
