@@ -57,6 +57,13 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
             }
             break;
         }
+        if (settings.left == 's' && settings.right == 'e' \
+        && settings.rotate == 'x' && settings.soft == 'y' && key == '/')
+        {
+            egg();
+            *gameover = 1;
+            return;
+        }
         else if (key == 27)
         {
             *gameover = 1;
