@@ -11,7 +11,7 @@ void display_settings(Settings settings, int end)
         printw("4. SOFT DROP >>>> '%c'\n", settings.soft);
         printw("5. HARD DROP >>>> '%c'\n", settings.hard);
         printw("6. HOLD PIECE >>> '%c'\n", settings.hold);
-        printw("7. END SETTINGS > 'ESC'\n");
+        printw("7. END SETTINGS > 'ENTER'\n");
     }
     else if (end == '1')
         printw("LEFT >> ");
@@ -32,7 +32,7 @@ void get_settings(Settings *settings)
 {
     int end;
 
-    while (end != 27)
+    while (end != '\n')
     {
         end = '0';
         display_settings(*settings, end);
