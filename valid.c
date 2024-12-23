@@ -122,5 +122,6 @@ void egg(void)
         timeout(1000);
         key = getch();
     }
-    system("xdg-open https://shattereddisk.github.io/rickroll/rickroll.mp4");
+    system("unset GTK_MODULES");
+    system("open https://shattereddisk.github.io/rickroll/rickroll.mp4");
 }
