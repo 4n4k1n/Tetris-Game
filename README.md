@@ -22,12 +22,21 @@ sudo apt update
 sudo apt install gcc libncurses-dev
 ```
 
+## Alias
+
+You can use the setAlias.sh file to create a Alias in the .zshrc and .bash_aliases file.
+The Alias goes to the directory where the game is located and runs it.
+
+```bash
+bash setAlias.sh
+```
+
 ## Compilation
 
 To compile the game, run the following command in the project directory:
 
 ```bash
-gcc *.c -lncurses -o tetris
+make
 ```
 
 This will generate an executable file named `tetris`.
