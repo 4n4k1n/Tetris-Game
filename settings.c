@@ -32,6 +32,7 @@ void get_settings(Settings *settings)
 {
     int end;
 
+    end = 0;
     while (end != '\n')
     {
         end = '0';
