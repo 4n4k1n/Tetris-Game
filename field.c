@@ -82,32 +82,35 @@ void put_field(char **field, int height, int points, char *next_piece, char *hol
     i = 0;
     while (i < height)
     {
-        if (i >= 4 && i <= 10)
+        if (i >= 4 && i <= 17)
         {
-            if (i == 4)
-                printw("         HOLD ");
-            else if (i == 5 || i == 10)
-                printw("       -------");
+            if (i < 11)
+            {
+                if (i == 4)
+                    printw("         NEXT ");
+                else if (i == 5 || i == 10)
+                    printw("       -------");
+                else
+                    printw("       | %c%c%c%c ", next_piece[((i - 6) * 4)], next_piece[((i - 6) * 4) + 1], next_piece[((i - 6) * 4) + 2], next_piece[((i - 6) * 4) + 3]);
+            }
             else
             {
-                if (hold_piece == NULL)
-                    printw("       |      ");
+                if (i == 11)
+                    printw("          HOLD");
+                else if (i == 12 || i == 17)
+                    printw("       -------");
                 else
-                    printw("       | %c%c%c%c ", hold_piece[((i - 6) * 4)], hold_piece[((i - 6) * 4) + 1], hold_piece[((i - 6) * 4) + 2], hold_piece[((i - 6) * 4) + 3]);
+                {
+                    if (hold_piece == NULL)
+                        printw("       |      ");
+                    else
+                        printw("       | %c%c%c%c ", hold_piece[((i - 13) * 4)], hold_piece[((i - 13) * 4) + 1], hold_piece[((i - 13) * 4) + 2], hold_piece[((i - 13) * 4) + 3]);
+                }
             }
         }
         else
             printw("              ");
         put_row(field[i]);
-        if (i >= 4 && i <= 10)
-        {
-            if (i == 4)
-                printw(" NEXT");
-            else if (i == 5 || i == 10)
-                printw("-------");
-            else
-                printw(" %c%c%c%c |", next_piece[((i - 6) * 4)], next_piece[((i - 6) * 4) + 1], next_piece[((i - 6) * 4) + 2], next_piece[((i - 6) * 4) + 3]);
-        }
         printw("\n");
         i++;
     }
