@@ -4,6 +4,7 @@ void gameover_sign(int points, int highscore)
 {
     char end;
 
+    end = 0;
     clear();
     printw("  __ _  __ _ _ __ ___   ___  _____   _____ _ __ \n");
     printw(" / _` |/ _` | '_ ` _ \\ / _ \\/ _ \\ \\ / / _ \\ '__|\n");
