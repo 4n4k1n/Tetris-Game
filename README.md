@@ -25,7 +25,7 @@ sudo apt install gcc libncurses-dev
 ## Alias
 
 You can use the setAlias.sh file to create a Alias in the .zshrc and .bash_aliases file.
-The Alias goes to the directory where the game is located and runs it.
+The Alias goes to the directory where the game is located and runs it. Just type `tetris`.
 
 ```bash
 bash setAlias.sh
