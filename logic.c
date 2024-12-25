@@ -21,7 +21,9 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
     switch_piece = NULL;
     while (piece->height < height - 3)
     {
-        place_piece(field, *piece, width, height);
+        reset_cords(piece);
+        printw("%d %d\n", piece->cords_x[1], piece->cords_y[1]);
+        place_piece(field, piece, width, height);
         put_field(field, height, *points, (*piece).next_piece, (*piece).hold_piece);
         remove_piece(field, *piece);
         timeout(speed);
@@ -94,10 +96,10 @@ void move_piece(char **field, ActivePiece *piece, int height, int width, int *po
         clear();
 		i++;
     }
-    place_piece(field, *piece, width, height);
+    place_piece(field, piece, width, height);
     put_field(field, height, *points, (*piece).next_piece, (*piece).hold_piece);
     check_rows(field, height, width, points);
-    if (piece->rounds % 10 == 0 && speed > 20)
+    if (piece->rounds % 10 == 0 && speed > 15)
         speed -= 2;
     clear();
 }
