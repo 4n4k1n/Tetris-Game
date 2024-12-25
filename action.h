@@ -5,7 +5,8 @@
 
 void clear_row(char *row, int width);
 void push_down(char **field, int row, int width);
-void place_piece(char **field, ActivePiece piece, int width, int height);
+void place_piece(char **field, ActivePiece *piece, int width, int height);
 void remove_piece(char **field, ActivePiece piece);
+void reset_cords(ActivePiece *piece);
 
 #endif
