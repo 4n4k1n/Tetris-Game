@@ -17,7 +17,7 @@ int main(void)
     int height = 20 + 6;
     char **field;
 	int gameover;
-    ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0};
+    ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0, {0, 0, 0, 0}, {0, 0, 0, 0}};
     Settings settings = {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, ' ', 'z'};
     int points = 0;
     int highscore;
