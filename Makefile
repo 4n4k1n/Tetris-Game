@@ -1,7 +1,7 @@
 CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror
-LDFLAGS = -lncurses
+LDFLAGS = -lncurses -lsqlite3
 
 TARGET = tetris
 
