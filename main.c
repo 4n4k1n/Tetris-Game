@@ -19,8 +19,8 @@ int main(void)
 	int gameover;
     ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0, {0, 0, 0, 0}, {0, 0, 0, 0}};
     Settings settings = {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, ' ', 'z'};
-    int points = 0;
-    int highscore;
+    Player current_player;
+    Player best_player;
 
 	srand(time(NULL));
     field = create_game_field(height, width);
@@ -32,6 +32,7 @@ int main(void)
     fill_field_for_start(field, height, width);
     initscr();
     keypad(stdscr, TRUE);
+    get_player_name(&current_player);
     get_settings(&settings);
     noecho();
 	gameover = 0;
@@ -43,13 +44,13 @@ int main(void)
 		piece.height = 2;
 		piece.width = 4;
         piece.rounds++;
-        move_piece(field, &piece, height, width, &points, &gameover, settings);
+        move_piece(field, &piece, height, width, &(current_player.score), &gameover, settings);
         check_game_status(field, &gameover, width);
 	}
-    put_field(field, height, points, piece.next_piece, piece.hold_piece);
+    put_field(field, height, current_player.score, piece.next_piece, piece.hold_piece);
     free_field(field, height);
-    highscore = check_highscore("highscore.txt", points);
-    gameover_sign(points, highscore);
+    check_highscore(&current_player, &best_player);
+    gameover_sign(current_player, best_player);
     endwin();
     return (0);
 }
