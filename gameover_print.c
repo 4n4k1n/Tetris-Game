@@ -5,9 +5,11 @@
 void get_player_name(Player *current_player)
 {
     clear();
+    echo();
     printw("ENTER PLAYER NAME: ");
-    scanf(" %49s", current_player->name);
     refresh();
+    getnstr(current_player->name, 49);
+    clear();
 }
 
 void gameover_sign(Player current_player, Player best_player)
@@ -22,27 +24,13 @@ void gameover_sign(Player current_player, Player best_player)
     printw(" \\__, |\\__,_|_| |_| |_|\\___|\\___/ \\_/ \\___|_| \n");
     printw("  __/ |                               @SKYW4LK3R\n");
     printw(" |___/   \n\n");
-
-    if (strcmp(best_player.name, current_player.name) == 0)
-    {
-        if (current_player.score > best_player.score)
-            printw("NEW HIGHSCORE >>%d<<\n", current_player.score);
-        else
-            printw(
-                "HIGHSCORE >>%d<<\n"
-                "SCORE >>%d<<\n",
-                best_player.score, current_player.score);
-    }
+    if (current_player.score > best_player.score)
+        printw("NEW HIGHSCORE >>%d<< BY '%s'\n", current_player.score, current_player.name);
     else
-    {
-        if (current_player.score > best_player.score)
-            printw("NEW HIGHSCORE >>%d<<\n", current_player.score);
-        else
-            printw(
-                "HIGHSCORE >>%d<< FROM '%s'\n"
-                "SCORE >>%d<<\n",
-                best_player.score, best_player.name, current_player.score);
-    }
+        printw(
+            "HIGHSCORE >>%d<< BY '%s'\n"
+            "SCORE >>%d<< BY '%s'\n",
+            best_player.score, best_player.name, current_player.score, current_player.name);
     printw("\nPress 'ESC' to quit.\n");
     refresh();
     while (end != 27)
