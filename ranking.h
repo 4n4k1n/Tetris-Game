@@ -1,6 +1,8 @@
 #ifndef RANKING_H
 #define RANKING_H
 
-int check_highscore(char *filename, int score);
+#include "player_struct.h"
+
+int check_highscore(Player *current_player, Player *best_player);
 
 #endif
