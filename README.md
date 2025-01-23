@@ -13,13 +13,14 @@ Before you can compile and run the game, ensure the following dependencies are i
 
 - GCC (GNU Compiler Collection)
 - `ncurses` library
+- `sqlite3` library
 
 ### Installing Dependencies
 
 #### On Ubuntu/Debian-based systems:
 ```bash
 sudo apt update
-sudo apt install gcc libncurses-dev
+sudo apt install sqlite3 libncurses5-dev libncursesw5-dev
 ```
 
 ## Alias
