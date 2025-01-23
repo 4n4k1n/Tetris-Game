@@ -19,8 +19,8 @@ int main(void)
 	int gameover;
     ActivePiece piece = {9, 0, NULL, NULL, NULL, 4, 0, 0, {0, 0, 0, 0}, {0, 0, 0, 0}};
     Settings settings = {KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, ' ', 'z'};
-    Player current_player;
-    Player best_player;
+    Player current_player = {0};
+    Player best_player = {0};
 
 	srand(time(NULL));
     field = create_game_field(height, width);
